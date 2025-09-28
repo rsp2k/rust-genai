@@ -1,8 +1,7 @@
 //! Python bindings for rust-genai multimodal embedding pipeline
 //!
-//! This module provides a Python interface with mock functionality for
-//! rapid development and testing. Real AI integration is available via
-//! the live-integration feature flag.
+//! This module provides a Python interface with both mock embeddings for
+//! development/testing and native AI integration for production use.
 
 use pyo3::prelude::*;
 use std::collections::HashMap;
@@ -138,7 +137,7 @@ impl MultimodalEmbedding {
     }
 }
 
-/// Simplified multimodal embedder for Python demonstration
+/// Multimodal embedder with both mock and native AI capabilities
 #[pyclass]
 pub struct MultimodalEmbedder {
     vision_model: String,
@@ -157,11 +156,11 @@ impl MultimodalEmbedder {
         }
     }
 
-    /// Create a mock embedding for demonstration
+    /// Create a mock embedding for development and testing
     pub fn create_mock_embedding(&self, image_url: String) -> PyResult<MultimodalEmbedding> {
         // Generate a mock description based on URL
         let description = format!(
-            "This is a mock description for image: {}. The image likely contains visual elements that would be analyzed by a vision model like {} and then embedded using {}.",
+            "Mock embedding for image: {}. Vision model: {}, Embedding model: {}.",
             image_url.split('/').last().unwrap_or("unknown"),
             self.vision_model,
             self.embedding_model
@@ -187,38 +186,38 @@ impl MultimodalEmbedder {
 
         // Create metadata
         let mut metadata = HashMap::new();
-        metadata.insert("source".to_string(), "mock_demo".to_string());
+        metadata.insert("source".to_string(), "mock_embedding".to_string());
         metadata.insert("url".to_string(), image_url);
         metadata.insert("vision_model".to_string(), self.vision_model.clone());
         metadata.insert("embedding_model".to_string(), self.embedding_model.clone());
-        metadata.insert("processing_method".to_string(), "python_bindings_demo".to_string());
+        metadata.insert("processing_method".to_string(), "mock_development".to_string());
 
         Ok(MultimodalEmbedding::new(description, embedding, metadata))
     }
 
-    /// Demonstrate concurrent processing simulation
-    pub fn simulate_concurrent_processing(&self, image_urls: Vec<String>) -> PyResult<(Vec<MultimodalEmbedding>, ProcessingStats)> {
+    /// Create mock embeddings for batch processing
+    pub fn create_mock_embeddings_batch(&self, image_urls: Vec<String>) -> PyResult<(Vec<MultimodalEmbedding>, ProcessingStats)> {
         use std::time::Instant;
 
         let start_time = Instant::now();
 
         if self.config.enable_progress_reporting {
-            println!("🚀 Python Bindings: Simulating Concurrent Processing");
+            println!("🚀 Mock Batch Processing");
             println!("   📊 Images: {}", image_urls.len());
             println!("   🔄 Max concurrent: {}", self.config.max_concurrent_requests);
         }
 
-        // Simulate processing with realistic timing
+        // Process mock embeddings with realistic timing
         let mut embeddings = Vec::new();
         let mut successful = 0;
 
-        // Simulate realistic processing time (2-10ms per image)
+        // Add realistic processing delay (2-10ms per image)
         let processing_delay_per_image = std::time::Duration::from_micros(
             2000 + (image_urls.len() as u64 * 50) // Scale with batch size
         );
 
         for url in image_urls.iter() {
-            // Simulate processing time
+            // Add processing delay for realism
             std::thread::sleep(processing_delay_per_image);
 
             match self.create_mock_embedding(url.clone()) {
@@ -227,7 +226,7 @@ impl MultimodalEmbedder {
                     successful += 1;
                 }
                 Err(_) => {
-                    // Mock failure handling (rare)
+                    // Handle mock failures
                 }
             }
         }
@@ -246,7 +245,7 @@ impl MultimodalEmbedder {
         };
 
         if self.config.enable_progress_reporting {
-            println!("📊 Simulation Results:");
+            println!("📊 Mock Processing Results:");
             println!("   🎯 Processed: {}/{} images", stats.successful, stats.total_processed);
             println!("   ⏱️  Duration: {:.3}s", stats.total_duration_seconds);
             println!("   🚀 Throughput: {:.2} images/sec", stats.throughput());
@@ -329,6 +328,7 @@ impl MultimodalEmbedder {
     }
 
     /// Create an embedding using direct Ollama API calls
+    #[cfg(feature = "native-integration")]
     pub fn create_ollama_embedding(&self, image_url: String) -> PyResult<MultimodalEmbedding> {
         use tokio::runtime::Runtime;
 
@@ -349,6 +349,7 @@ impl MultimodalEmbedder {
 
 
     /// Batch process multiple images using Ollama API
+    #[cfg(feature = "native-integration")]
     pub fn create_ollama_embeddings_batch(&self, image_urls: Vec<String>) -> PyResult<(Vec<MultimodalEmbedding>, ProcessingStats)> {
         let mut embeddings = Vec::new();
         let mut successful = 0;
@@ -506,7 +507,7 @@ fn rust_genai(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(create_performance_config, m)?)?;
 
     m.add("__version__", "0.4.0")?;
-    m.add("__doc__", "High-performance multimodal embedding pipeline for Python with real AI integration")?;
+    m.add("__doc__", "High-performance multimodal embedding pipeline for Python with mock and native AI integration")?;
 
     // Add capability flags for introspection
     m.add("HAS_OLLAMA_INTEGRATION", true)?;

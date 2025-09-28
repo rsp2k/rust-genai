@@ -170,7 +170,7 @@ def test_batch_processing_performance(image_paths: List[str]):
             image_urls = [f"file://{path}" for path in test_images]
 
             start = time.time()
-            embeddings, stats = embedder.simulate_concurrent_processing(image_urls)
+            embeddings, stats = embedder.create_mock_embeddings_batch(image_urls)
             duration = time.time() - start
 
             print(f"   📏 Processed: {len(embeddings)} embeddings")
@@ -217,7 +217,7 @@ def test_memory_usage_patterns(image_paths: List[str]):
             chunk = image_urls[i:i+chunk_size]
 
             chunk_start = time.time()
-            embeddings, stats = embedder.simulate_concurrent_processing(chunk)
+            embeddings, stats = embedder.create_mock_embeddings_batch(chunk)
             chunk_duration = time.time() - chunk_start
 
             total_embeddings.extend(embeddings)

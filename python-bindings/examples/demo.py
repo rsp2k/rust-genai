@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Demo script for genai-python bindings.
+Example script for rust-genai Python bindings.
 
-This script demonstrates the Python API without requiring live API calls.
+This script shows the Python API with mock embeddings for development.
 Run this after building the Python extension.
 """
 
@@ -11,8 +11,8 @@ def main():
         # Import our Rust-based Python module
         import rust_genai
 
-        print("🚀 Rust-Python Multimodal Embedding Demo")
-        print("=========================================\n")
+        print("🚀 Rust-Python Multimodal Embedding Example")
+        print("===========================================\n")
 
         # Create performance configuration
         config = rust_genai.PerformanceConfig(
@@ -43,8 +43,8 @@ def main():
         print(f"   📝 Description: {embedding.text_description[:80]}...")
         print(f"   📋 Metadata keys: {list(embedding.metadata.keys())}\n")
 
-        # Test concurrent processing simulation
-        print("🚀 Testing concurrent processing simulation:")
+        # Test batch processing
+        print("🚀 Testing batch processing:")
         test_images = [
             "https://example.com/image1.jpg",
             "https://example.com/image2.jpg",
@@ -53,7 +53,7 @@ def main():
             "https://example.com/image5.jpg",
         ]
 
-        embeddings, stats = embedder.simulate_concurrent_processing(test_images)
+        embeddings, stats = embedder.create_mock_embeddings_batch(test_images)
 
         print(f"\n📊 Processing Results:")
         print(f"   {stats}")
@@ -77,7 +77,7 @@ def main():
             print(f"      🤖 Vision: {emb.metadata.get('vision_model', 'unknown')}")
             print(f"      📊 Embedding: {emb.metadata.get('embedding_model', 'unknown')}")
 
-        print("\n✅ Python bindings demo completed successfully!")
+        print("\n✅ Python bindings example completed successfully!")
         print("🎯 Ready for integration with live Rust pipeline!")
 
     except ImportError as e:

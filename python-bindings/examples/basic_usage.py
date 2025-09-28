@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Basic usage example for genai-python multimodal embeddings.
+Basic usage example for rust-genai multimodal embeddings.
 
-This example demonstrates the simplest way to get started with
+This example shows the simplest way to get started with
 high-performance multimodal embeddings in Python.
 """
 
@@ -20,7 +20,7 @@ def main():
 
     # Create performance configuration
     config = PerformanceConfig(
-        max_concurrent_requests=2,  # Conservative for demo
+        max_concurrent_requests=2,  # Conservative for example
         request_timeout_seconds=45,
         batch_size=5,
         enable_progress_reporting=True
@@ -45,8 +45,8 @@ def main():
     print(f"📷 Processing {len(test_images)} test images...\n")
 
     try:
-        # Process images concurrently using mock simulation
-        embeddings, stats = embedder.simulate_concurrent_processing(test_images)
+        # Process images using mock embeddings
+        embeddings, stats = embedder.create_mock_embeddings_batch(test_images)
 
         print(f"\n✅ Results:")
         print(f"   📊 Stats: {stats}")

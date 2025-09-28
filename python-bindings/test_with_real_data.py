@@ -161,7 +161,7 @@ def test_performance_characteristics():
 
             # Measure batch processing
             start = time.time()
-            embeddings, stats = embedder.simulate_concurrent_processing(test_urls)
+            embeddings, stats = embedder.create_mock_embeddings_batch(test_urls)
             batch_time = time.time() - start
 
             print(f"   ⏱️  Single: {single_time*1000:.1f}ms")

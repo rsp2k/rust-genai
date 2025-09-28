@@ -21,7 +21,7 @@ path = ".."
 optional = true
 
 [features]
-default = ["native-integration"]
+default = []
 native-integration = ["genai"]
 
 [build-dependencies]
